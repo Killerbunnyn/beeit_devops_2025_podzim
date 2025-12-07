@@ -42,6 +42,27 @@ function zobrazitManual() {
 "
 }
 
+
+# =======================================================
+# --------------- FUNKCE pro Docker (-p) ----------------
+# =======================================================
+
+function informaceOProcesech() {
+    zaloguj "Získávám informace o procesech."
+    local pid_aktualni=$$
+    local pid_rodic=$PPID
+    local priorita=$(ps -o ni= -p $$ | tr -d ' ')
+    local pocet_procesu=$(ps aux --no-headers | wc -l)
+
+    echo "--- Informace o aktuálním procesu ---"
+    echo "PID aktuálního skriptu: $pid_aktualni"
+    echo "PID rodičovského procesu: $pid_rodic"
+    echo "Priorita (Nice Value): $priorita"
+    echo "Celkový počet procesů v OS: $pocet_procesu"
+
+    return 0
+}
+
 # --------------- 2. LOGOVÁNÍ ---------------
 
 function zaloguj() {
@@ -164,7 +185,7 @@ function najitRegex() {
 # =======================================================
 
 # Cyklus pro zpracování flagů
-while getopts ":hiausxuf:" volba; do
+while getopts ":hpiausxf:" volba; do
     case "${volba}" in
         h)
             zobrazitManual
@@ -172,6 +193,9 @@ while getopts ":hiausxuf:" volba; do
             ;;
         i)
             zakladniInfo
+            ;;
+        p) # <--- NOVÝ FLAG PRO PROCESY
+            informaceOProcesech
             ;;
         a)
             FLAG_VYPSAT_UPDATE=true
@@ -244,6 +268,7 @@ fi
 if [ "$#" -gt 0 ]; then
     najitRegex "$1"
 fi
+
 
 # konec
 exit 0
