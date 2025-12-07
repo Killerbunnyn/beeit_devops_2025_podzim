@@ -1,17 +1,22 @@
 # Dockerfile
 FROM ubuntu:20.04
 
-# Instalace procps (kvůli příkazu ps pro procesy)
+# Instalace procps
 RUN apt-get update && apt-get install -y procps
 
-# Skopírování tvého skriptu do kontejneru
+# Kopírování skriptu do kontejneru
 COPY linux_cli.sh /app/linux_cli.sh
 
-# Nastavení práv ke spuštění
+# Práva ke spuštění
 RUN chmod +x /app/linux_cli.sh
 
-# Nastavení pracovního adresáře
+# Nastavení adresáře
 WORKDIR /app
 
-# Výchozí příkaz, který se spustí (test procesů)
-CMD ["./linux_cli.sh", "-p"]
+# ----------------------------------------------------
+# ---------------- ENTRYPOINT A CMD ------------------
+# ----------------------------------------------------
+
+ENTRYPOINT ["/app/linux_cli.sh"]
+
+CMD ["-h"]
